@@ -1,0 +1,37 @@
+name: issue-opened-hint
+
+# deletion-spec（拆除优先）
+#   存在理由：issue 一开就提示内环分支命名约定，降低领取时的纪律负担。
+#            真理源守护：带 truth-source label 的 issue 改贴「冻结勿领取」提示，不误导成可领取任务。
+#            本仓库内环合 main（默认分支），GitHub 原生 Closes #n 在合 main 时即自动 close issue，
+#            故本 workflow 只负责「贴提示」与「truth-source 守护」，不参与 close。
+#   禁用方式：删除本 .yml 即可（项目级隔离，无下游依赖）。
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  hint-branch-naming:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment branch-naming hint
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          # 真理源守护：带 truth-source label 的 issue 是冻结真理源，不可领取——贴冻结提示而非领取提示
+          LABELS=$(gh issue view "${ISSUE_NUMBER}" --repo "${REPO}" --json labels --jq '.labels[].name' 2>/dev/null || echo "")
+          if printf '%s\n' "${LABELS}" | grep -qx "truth-source"; then
+            gh issue comment "${ISSUE_NUMBER}" --repo "${REPO}" \
+              --body "🔒 内环提示：本 issue 是【真理源】(truth-source)，**冻结常驻、不可领取、不进领取→关闭循环**。改它只走反向通道（需求变 / 工程撞墙）；日常干活请去对应的 \`task\` issue。"
+            echo "真理源 #${ISSUE_NUMBER}：贴冻结提示（跳过领取提示）"
+            exit 0
+          fi
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPO}" \
+            --body "🤖 内环提示：领取本 issue 请建分支 \`feat/${ISSUE_NUMBER}-<slug>\`，PR 目标 \`main\`，body 写 \`Closes #${ISSUE_NUMBER}\`。合并后自动 close 本 issue 并保留分支。"

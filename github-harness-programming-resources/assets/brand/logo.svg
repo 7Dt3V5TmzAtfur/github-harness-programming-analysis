@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+  <title id="title">GitHub Harness Programming logo</title>
+  <desc id="desc">A clean logo for a GitHub Harness starter kit.</desc>
+  <rect width="320" height="320" rx="48" fill="#0f172a"/>
+  <circle cx="160" cy="160" r="92" fill="#2563eb" opacity="0.18"/>
+  <path d="M88 111h144v46H88zM88 177h144v46H88z" fill="#f8fafc"/>
+  <path d="M112 134h96M112 200h96" stroke="#2563eb" stroke-width="12" stroke-linecap="round"/>
+  <path d="M160 157v20" stroke="#f59e0b" stroke-width="12" stroke-linecap="round"/>
+  <text x="160" y="280" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" fill="#f8fafc">HARNESS</text>
+</svg>

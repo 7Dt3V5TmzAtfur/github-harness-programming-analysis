@@ -1,0 +1,32 @@
+name: pr-issue-link-guard
+
+# deletion-spec（拆除优先）
+#   存在理由：PR 一开就检查 body 有没有写 Closes/Refs 关联 issue；缺了就评论软提醒（不阻断合并），
+#            呼应内环「每个 PR 都要挂在 issue 上」的纪律。
+#   禁用方式：删除本 .yml 即可（项目级隔离，无下游依赖）。
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  link-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR body for issue link
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+          if printf '%s' "${PR_BODY}" | grep -Eqi '(close[sd]?|fix(?:e[sd])?|resolve[sd]?|refs?|关闭|修复|解决)\s*[:：]?\s*#[0-9]+'; then
+            echo "PR body 含 issue 关联，OK。"
+            exit 0
+          fi
+          gh pr comment "${PR_NUMBER}" --repo "${REPO}" \
+            --body "⚠️ 软提醒（不阻断合并）：本 PR body 没有写 \`Closes #<issue>\` 或 \`Refs #<issue>\`。内环要求每个 PR 挂在 issue 上：执行型用 Closes，父 Epic / 真理源用 Refs。"

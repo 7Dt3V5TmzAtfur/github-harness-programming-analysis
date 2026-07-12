@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
+  <title id="title">GitHub Harness Programming Starter Kit banner</title>
+  <desc id="desc">Banner showing the demand to evidence workflow.</desc>
+  <rect width="1280" height="420" fill="#0f172a"/>
+  <circle cx="1050" cy="80" r="180" fill="#2563eb" opacity="0.16"/>
+  <circle cx="1120" cy="330" r="150" fill="#f59e0b" opacity="0.12"/>
+  <text x="72" y="116" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#f8fafc">GitHub Harness Programming</text>
+  <text x="72" y="174" font-family="Inter, Arial, sans-serif" font-size="28" fill="#cbd5e1">Copy Skills, prompts, workflows, and GitHub templates into your repo.</text>
+  <g font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">
+    <rect x="72" y="246" width="210" height="58" rx="12" fill="#1d4ed8"/>
+    <text x="177" y="283" text-anchor="middle" fill="#ffffff">Discussion</text>
+    <path d="M296 275h58" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    <rect x="368" y="246" width="160" height="58" rx="12" fill="#334155"/>
+    <text x="448" y="283" text-anchor="middle" fill="#ffffff">Issue</text>
+    <path d="M542 275h58" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    <rect x="614" y="246" width="130" height="58" rx="12" fill="#334155"/>
+    <text x="679" y="283" text-anchor="middle" fill="#ffffff">PR</text>
+    <path d="M758 275h58" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    <rect x="830" y="246" width="230" height="58" rx="12" fill="#f59e0b"/>
+    <text x="945" y="283" text-anchor="middle" fill="#111827">Evidence</text>
+  </g>
+</svg>

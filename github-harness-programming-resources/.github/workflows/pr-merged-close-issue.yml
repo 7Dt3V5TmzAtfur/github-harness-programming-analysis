@@ -1,0 +1,76 @@
+name: pr-merged-close-issue
+
+# deletion-spec（拆除优先）
+#   存在理由：本仓库内环把 feat 分支合进 main（默认分支）。GitHub 原生 "Closes #n" 在合默认分支时本就会自动 close issue，
+#            但原生有两个缺口：① 只认英文 Closes/Fixes/Resolves，不认中文「关闭/修复/解决」② 不区分 truth-source，会误关冻结真理源。
+#            故本 workflow 补上：中文 PR body 兼容 + truth-source 守护 + 显式保留分支 + 留 close 归还 comment。
+#   纪律修正（相对参考实现）：只 close Closes/Fixes/Resolves/关闭/修复/解决，**不 close Refs**——
+#            父 Epic / 真理源用 Refs 关联，绝不被本 workflow 误关控制面。
+#   禁用方式：删除本 .yml 即可（项目级隔离，无下游依赖）。
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  issues: write
+  contents: read
+  pull-requests: read
+
+jobs:
+  close-referenced-issues:
+    # 仅在 PR 真正被合并时触发；关闭但未合并不处理
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close referenced issues, keep branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+          echo "PR #${PR_NUMBER} merged into ${PR_BASE}"
+
+          # 解析 body 中的关闭引用：英文 Closes/Fixes/Resolves + 中文 关闭/修复/解决，后接 #数字
+          # 注意：刻意不匹配 Refs —— Refs 只关联不关闭（父 Epic / 真理源保护）
+          NUMS=$(python3 <<'PY'
+          import os, re
+          body = os.environ.get("PR_BODY", "") or ""
+          pat = re.compile(
+              r'(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?|关闭|修复|解决)\s*[:：]?\s*#(\d+)',
+              re.IGNORECASE,
+          )
+          print(" ".join(sorted(set(pat.findall(body)), key=int)))
+          PY
+          )
+
+          if [ -z "${NUMS}" ]; then
+            echo "PR body 无 issue 关闭引用，跳过。"
+            exit 0
+          fi
+          echo "解析到引用 issue: ${NUMS}"
+
+          for n in ${NUMS}; do
+            # 真理源守护：带 truth-source label 的 issue 是冻结真理源，永不自动 close（即使 PR body 误写 Closes #真理源）
+            LABELS=$(gh issue view "${n}" --repo "${REPO}" --json labels --jq '.labels[].name' 2>/dev/null || echo "")
+            if printf '%s\n' "${LABELS}" | grep -qx "truth-source"; then
+              gh issue comment "${n}" --repo "${REPO}" \
+                --body "🔒 #${n} 是【真理源】(truth-source)，按内环纪律【不自动关闭】。PR #${PR_NUMBER} 仅与之关联。改真理源请走反向通道（需求变 / 工程撞墙）。"
+              echo "跳过 #${n}（truth-source 真理源守护生效）"
+              continue
+            fi
+            STATE=$(gh issue view "${n}" --repo "${REPO}" --json state --jq .state 2>/dev/null || echo "MISSING")
+            if [ "${STATE}" = "OPEN" ]; then
+              gh issue comment "${n}" --repo "${REPO}" \
+                --body "由 PR #${PR_NUMBER} 合并进 \`${PR_BASE}\` 自动关闭（归还）。按内环纪律【保留】分支。"
+              gh issue close "${n}" --repo "${REPO}" --reason completed
+              echo "已自动 close #${n}"
+            else
+              echo "跳过 #${n}（state=${STATE}，非 OPEN）"
+            fi
+          done
+
+          echo "完成。本 workflow 不删除任何分支（留分支纪律）。"
