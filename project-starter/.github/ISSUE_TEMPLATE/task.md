@@ -1,49 +1,65 @@
----
-name: "🔨 任务（Task）"
-about: "可领取的执行单元 · 跑内环（分支→PR→合 main→自动 close）"
-title: "[task] "
-labels: ["task"]
----
+# Task Issue Template
 
-<!-- GitHub Harness · Task · 可领取的执行单元，跑内环闭环。 -->
+> 📋 Teaching mirror. Live templates: `task` at `.github/ISSUE_TEMPLATE/task.md`; also see `parent-task.md` / `sub-task.md` / `truth-source.md` for the three issue layers. GitHub uses the `.github/` ones natively; copy either.
 
-> 🟡 **等领取** · 📌 **一句话**：[这任务要干啥，一句大白话]
->
-> 〔来龙去脉〕[从哪拆出来] → [你在哪个环节] → [干完啥样]
+## Goal
 
-## 🎯 目标（Outcome）
-[做完世界有什么不同，一句话说清]
+What should this task complete?
 
-## 📐 最小竖切（一条分支装得下）
-- [ ] [步骤 1]
-- [ ] [步骤 2]
+## Source
 
-## ✅ 成功标准（机械可验）
-- [ ] [可机械验证的判据：某命令绿 / 某文件存在]
-- [ ] PR 合进 `main` → 本 issue 自动 close → 分支保留
+- Discussion:
+- Demand confirmation commit:
+- Related issue or PR:
 
-## 📦 证据要求（Evidence Required）
-- 改了什么：…
-- 证据在哪里：PR / commit / 命令输出 / 截图 / 链接
-- 没做什么 / 风险：…
+## Scope
 
-## 🗑️ deletion-spec（拆除说明）
-[这次新增的东西，将来怎么删 / 回滚]
+### In Scope
 
----
+-
 
-<details>
-<summary>🔧 执行字段（给 agent / 机器，Kun 可不看）</summary>
+### Out Of Scope
 
-- **owner**：[谁干]
-- **依赖**：Refs #[前置 task issue 编号]
-- **依据真理源**：见 #[真理源 issue 编号]（只关联、不关闭）
-- **verifier**：`[收口校验命令]`
-- **source**：Discussion #… / Demand confirmation commit …
+-
 
-</details>
+## Inputs
 
-## 🔑 黑话小词典
-- 竖切=一条分支能装下的最小完整改动 ｜ deletion-spec=将来怎么拆掉它 ｜ verifier=收口的机械校验命令 ｜ 内环=分支→PR→合 main→自动 close
+| Input | Location | Why it matters |
+|---|---|---|
+|  |  |  |
 
-> ⚠️ **Close Condition**：验收标准达成 + 证据 comment 已回写并经人审，才可关闭。
+## Deliverables
+
+| Deliverable | Review location |
+|---|---|
+|  |  |
+
+## Acceptance Criteria
+
+- [ ] The result matches the confirmed demand.
+- [ ] The work stays inside this issue scope.
+- [ ] Deliverables can be opened, reviewed, or run.
+- [ ] Evidence comment is posted before close.
+
+## Agent Instructions
+
+- Restate goal, scope, acceptance, and evidence target before implementation.
+- If requirements are unclear, return to the Discussion.
+- If scope changes, split a new issue.
+- After execution, write an evidence comment.
+
+## Close Condition
+
+Close only when acceptance criteria are met and evidence is reviewable.
+
+## Deletion-spec
+
+What this task added, and how to roll it back or remove it later:
+-
+
+## Layer (pick one)
+
+- `task` — one executable unit (default).
+- `sub-task` — slice under a parent Epic; PR uses `Closes #<sub>`.
+- `parent` Epic — control surface only; PR uses `Refs #<parent>`, never `Closes`.
+- `truth-source` — frozen brief; never claimed, never auto-closed.

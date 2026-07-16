@@ -1,61 +1,69 @@
----
-name: "💬 需求确认（Demand Confirmation）"
-about: "把模糊需求聊清楚 · 结尾让 AI 写 demand confirmation commit"
-title: "[demand] "
----
+# Demand Discussion Template
 
-<!-- GitHub Harness · Demand Confirmation · 需求阶段，把模糊想法聊成可执行确认。 -->
+> 📋 Teaching mirror. Live template: `.github/DISCUSSION_TEMPLATE/demand-confirmation.md`. Enable Discussions in repo Settings → Features (categories must be created in the UI; the API cannot create them).
 
-> 📌 **一句话**：[这次想做什么，一句大白话]
+Use this before implementation. The goal is to make requirements explicit enough to split into task issues.
 
-## 来龙去脉
+## Raw Demand
 
-```mermaid
-flowchart LR
-  A["模糊需求"] --> B["本 Discussion 聊清"]
-  B --> C["demand confirmation commit"]
-  C --> D["拆 task issue"]
-```
+Write the request in normal language. It can be rough.
 
-## 📖 原始需求（Raw Demand）
-[把想法倒出来，不用组织]
+## Target User
 
-## 🎯 目标用户（Target User）
-[谁用，在什么场景下用]
+- Who is this for:
+- What are they trying to do:
+- What pain or constraint matters:
 
-## 🎯 第一版目标（First Version Goal）
-[第一版做到哪算成功，一句话]
+## First Version Goal
 
-## 📐 范围边界
-- ✅ In scope：…
-- 🚫 Out of scope：…
+- What should version one accomplish:
+- What must be visible or usable:
+- What does success look like:
 
-## ✅ 验收标准（Acceptance Standard）
-[做完什么样算交付，可机械验证更好]
+## Scope
 
-## ❓ 开放问题（Open Questions）
-- …
+### In Scope
 
-## 你要拍的板 + 我的推荐
+-
 
-> [!TIP]
-> 我的推荐：[我建议 X，因为 Y]，可回「按推荐」。
+### Out Of Scope
 
----
+-
 
-## 📝 Demand Confirmation Commit
-Discussion 结尾让 AI 把确认结果写成下面这段（贴回 commit / 留底）：
+### Later
+
+-
+
+## Inputs And Materials
+
+- Existing files:
+- Data or content:
+- External links:
+- Constraints:
+
+## Acceptance Standard
+
+- What can be opened, clicked, run, or reviewed:
+- What evidence proves it:
+- Who reviews it:
+
+## Open Questions
+
+- 
+
+## Demand Confirmation Commit
+
+Ask the AI agent to write this after the Discussion is clear:
 
 ```markdown
+## Demand confirmation commit
+
 - Target user:
 - First version goal:
 - In scope:
 - Out of scope:
+- Required inputs:
 - Acceptance standard:
 - Open questions:
-- Suggested issues:
+- Suggested task issues:
 ```
-
-> 🔑 **黑话**：Demand confirmation = 把模糊需求冻结成一段可追溯的确认，作为拆 issue 的依据 ｜ Discussion 只聊需求不干活，干活去 task issue
-
-> ⚠️ **边界**：Discussion 不是执行任务。确认后拆成 task issue 再领，别在本 Discussion 直接开工。

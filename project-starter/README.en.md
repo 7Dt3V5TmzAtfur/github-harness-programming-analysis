@@ -1,92 +1,200 @@
-# GitHub Harness Programming Starter Kit
+# GitHub Harness Project Starter
 
-This repo is a copy-and-use starter kit for running AI work through GitHub.
+[中文](README.md) · [Adoption guide](docs/adoption-guide.md) · [How it works](docs/how-it-works.md) · [Public boundary](docs/public-boundary.md)
 
-It packages a small version of Kun's GitHub Harness workflow: project instructions, reusable Skills, GitHub templates, and operating checklists. The goal is practical: copy these files into your own repo, let your AI agent read them, and run work through Discussion, issue, PR, and evidence comments instead of scattered chat.
+![Status](https://img.shields.io/badge/status-ready--to--deploy-2f9e44)
+![GitHub Harness](https://img.shields.io/badge/GitHub-Harness-blue)
+![Skills](https://img.shields.io/badge/includes-Skills%20%2B%20Prompts%20%2B%20Templates-f2b705)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-## Quick Start
+![GitHub Harness Project Starter banner](assets/brand/banner.svg)
 
-### 1. Copy the kit into your repo
+This is a **ready-to-deploy project bootstrap that comes with the GitHub Harness kit pre-installed**. Drop the whole directory into the root of any new repository and you immediately get `AGENTS.md`, `.agents/`, `.github/` and the rest of the deployed layout — no need to assemble anything by hand.
 
-Copy these folders and files:
+Once deployed, AI agents follow this loop: **demand → task → PR / evidence → review → close**. The contents go beyond the Quick Start minimum: you also get workflows, checklists, examples, docs, visual assets, diagrams, source templates, and a backup prompt.
 
-| Source | Put it in your repo | Why |
-|---|---|---|
-| [`prompts/AGENTS.example.md`](prompts/AGENTS.example.md) | `AGENTS.md` | Project-level instructions for your AI agent |
-| [`skills/github-harness-workflow/SKILL.md`](skills/github-harness-workflow/SKILL.md) | `.agents/skills/github-harness-workflow/SKILL.md` | The reusable workflow Skill |
-| [`skills/github-cognitive-surface-lite/SKILL.md`](skills/github-cognitive-surface-lite/SKILL.md) | `.agents/skills/github-cognitive-surface-lite/SKILL.md` | The issue/comment writing Skill |
-| [`templates/`](templates/) | `.github/` or your docs folder | Discussion, issue, PR, and evidence templates |
-| [`checklists/adoption-checklist.md`](checklists/adoption-checklist.md) | `docs/github-harness-checklist.md` | Setup checklist |
+## Workflow at a glance
 
-You do not need to copy every file on day one. Start with `AGENTS.md`, the workflow Skill, and the three templates: demand Discussion, task issue, evidence comment.
-
-### 2. Ask your AI agent to read the instructions
-
-Use this prompt:
-
-```text
-Read AGENTS.md and .agents/skills/github-harness-workflow/SKILL.md.
-Then help me run this repo through the GitHub Harness workflow.
-Do not start implementation until we have a demand Discussion or a task issue.
+```mermaid
+flowchart LR
+  A["Demand Discussion"] --> B["Demand confirmation commit"]
+  B --> C["Task issue"]
+  C --> D["PR or file change"]
+  D --> E["Evidence comment"]
+  E --> F["Human review"]
+  F --> G{"Next step"}
+  G -->|accepted| H["Close"]
+  G -->|more work| C
+  G -->|scope changed| A
 ```
 
-### 3. Open the first demand Discussion
+> An SVG visual of the same loop ships at [`assets/workflow/github-harness-loop.svg`](assets/workflow/github-harness-loop.svg).
 
-Use [`templates/discussion-demand-confirmation.md`](templates/discussion-demand-confirmation.md).
+## 5-minute Quick Start
 
-The Discussion is where requirements get clarified. It should end with an AI-written demand confirmation commit.
+### 1. Create a new repository and copy this project in
 
-### 4. Split one task issue
+```bash
+# Create an empty repository with GitHub CLI
+gh repo create my-new-project --public --add-readme
 
-Use [`templates/task-issue.md`](templates/task-issue.md).
+# Copy the entire project-starter content to the new repo root
+cp -R project-starter/. my-new-project/
+cd my-new-project
+git add . && git commit -m "chore: bootstrap with GitHub Harness starter"
+git push
+```
 
-The issue should be narrow enough that an AI agent can execute it, produce evidence, and stop for review.
+> You can also zip `project-starter/` and upload it as a repository initialization template.
 
-### 5. Require an evidence comment
+### 2. Enable Discussions
 
-Use [`templates/evidence-comment.md`](templates/evidence-comment.md).
+Open **Settings → Features** for the repository and enable **Discussions**.
 
-The agent must say what changed, where the evidence is, what is not done, and what should happen next.
+> ⚠️ Discussions must be turned on in the UI; the GitHub API cannot create them.
 
-### 6. Inner-loop automation + labels
+### 3. Create the "需求确认 / Demand" category
 
-Copy `.github/workflows/` (three workflows) so the loop runs itself:
+Go to **Discussions → Categories → New category**:
 
-- `issue-opened-hint.yml` — posts a branch-naming hint on new issues; truth-source issues get a "frozen, do not claim" note.
-- `pr-merged-close-issue.yml` — auto-closes `Closes #` issues when a PR merges to `main`; guards `truth-source`; reads Chinese PR bodies; keeps the branch.
-- `pr-issue-link-guard.yml` — soft-reminds if a PR body lacks `Closes/Refs` (non-blocking).
+- Name: `需求确认 / Demand`
+- Description: Confirm the target user, first-version scope, out-of-scope items, and acceptance standard
+- Format: `Discussion` (not Question or Announcement)
 
-Create the label set (`prd` / `truth-source` / `parent-task` / `sub-task` / `task` / `phase-a` / `demo` / `frozen`) — see [`docs/labels.md`](docs/labels.md).
+### 4. Open your first demand Discussion
 
-> 💬 **Enable Discussions** in repo Settings → Features, then create a category (e.g. "Demand") in the Discussions UI — the API cannot create categories.
+Use the [`templates/discussion-demand-confirmation.md`](templates/discussion-demand-confirmation.md) template to capture the target user, first-version scope, acceptance standard, and open questions. End the discussion with a **Demand confirmation commit** section that locks the shared understanding.
 
-## Living Loop
+### 5. Open the first task issue
 
-This repo runs its own kit — it is not an empty file pack. See the real loop:
+From the confirmed demand, use [`templates/task-issue.md`](templates/task-issue.md) to open a single executable, verifiable task issue and assign or claim it.
 
-- [#1 PRD truth-source](https://github.com/kun-content-lab/github-harness-programming-resources/issues/1) — frozen product definition
-- [#2 Parent Epic](https://github.com/kun-content-lab/github-harness-programming-resources/issues/2) — 5 native sub-issues, progress auto-sums
-- [SI-4 demo PR #9](https://github.com/kun-content-lab/github-harness-programming-resources/pull/9) — `feat/6-demo-loop` → `Closes #6` → merge main → auto-close
-- End-to-end walkthrough: [`examples/living-loop-walkthrough.md`](examples/living-loop-walkthrough.md)
+### 6. Require an evidence comment back from the AI
 
-## Repository Map
+When the AI finishes the work, it **must** reply on the issue using [`templates/evidence-comment.md`](templates/evidence-comment.md) with:
 
-| Path | What it gives you |
+- What changed
+- Where the evidence is
+- What was not done
+- What risks remain
+- Suggested next step: close / continue / split / return to Discussion
+
+### 7. Automation + label set
+
+Three workflows ship under `.github/workflows/` and activate as soon as you push:
+
+| Workflow | Purpose |
 |---|---|
-| [`docs/how-it-works.md`](docs/how-it-works.md) | The GitHub Harness model |
-| [`docs/adoption-guide.md`](docs/adoption-guide.md) | How to install this kit in another repo |
-| [`docs/surface-map.md`](docs/surface-map.md) | What Discussion, issue, PR, comment, and board each do |
-| [`prompts/`](prompts/) | Public project instruction examples |
-| [`skills/`](skills/) | Copyable Skill files for AI agents |
-| [`workflows/`](workflows/) | Step-by-step operating loops |
-| [`templates/`](templates/) | Demand, task, PR, evidence, and review templates |
-| [`checklists/`](checklists/) | Adoption and boundary checks |
-| [`examples/`](examples/) | A small example project using the workflow |
+| `issue-opened-hint.yml` | New issue gets branch-naming hint; `truth-source` issues get a "frozen, do not claim" notice |
+| `pr-merged-close-issue.yml` | PR merged into `main` auto-closes referenced `Closes #` issues; skips `truth-source`; supports Chinese PR body; keeps branches |
+| `pr-issue-link-guard.yml` | Soft reminder when a PR has no `Closes/Refs` link (does not block merging) |
 
-## Boundary
+Create the following label set under **Issues → Labels** (see [`docs/labels.md`](docs/labels.md) for details):
 
-This is a public starter kit. It contains reusable workflow instructions, templates, and examples. It does not contain private project material, credentials, personal workspace paths, or account-specific automation.
+`prd` · `truth-source` · `parent-task` · `sub-task` · `task` · `phase-a` · `demo` · `frozen`
 
-## License
+### 8. Tell the AI to read the project instructions
 
-MIT
+In an AI agent session, send:
+
+```text
+Please read AGENTS.md and .agents/skills/github-harness-workflow/SKILL.md first,
+then drive this project through the GitHub Harness workflow.
+Do not start implementation until a demand Discussion or a task issue exists.
+```
+
+That completes the loop: **demand → task → PR → evidence → review → close**.
+
+## Directory layout
+
+```text
+project-starter/
+├── AGENTS.md                          # Project-level agent instructions (root)
+├── LICENSE                            # MIT
+├── README.md                          # This file (Chinese)
+├── README.en.md                       # This file (English)
+├── .gitignore
+├── .agents/                           # Deployed agent skills
+│   └── skills/
+│       ├── github-harness-workflow/SKILL.md
+│       └── github-cognitive-surface-lite/SKILL.md
+├── .github/                           # GitHub templates and workflows
+│   ├── DISCUSSION_TEMPLATE/
+│   ├── ISSUE_TEMPLATE/
+│   ├── COMMENT_TEMPLATE/
+│   ├── workflows/
+│   └── PULL_REQUEST_TEMPLATE.md
+├── docs/                              # Reference documentation (7 files)
+├── checklists/                        # Acceptance checklists (2 files)
+├── workflows/                         # Process walkthroughs (3 files)
+├── examples/                          # End-to-end examples (2 files)
+├── assets/                            # Brand and workflow visuals (4 SVGs + 2 notes)
+├── diagrams/                          # Source diagram (1 Mermaid)
+├── templates/                         # Source templates (5 files, for customisation)
+└── prompts/                           # Backup prompt (1 file)
+```
+
+## What lives where
+
+| Path | Contents and purpose |
+|---|---|
+| [`AGENTS.md`](AGENTS.md) | Project-level agent instructions. Lives at the repo root so the AI reads it first |
+| [`.agents/skills/`](.agents/skills/) | Two skills: `github-harness-workflow` (main loop) + `github-cognitive-surface-lite` (surface expression) |
+| [`.github/`](.github/) | Discussion / Issue / Comment templates + 3 automation workflows + PR template |
+| [`docs/`](docs/) | 7 reference docs: how it works, adoption guide, surface map, public boundary, verification, labels, review checklist |
+| [`checklists/`](checklists/) | 2 acceptance checklists: pre-adoption and public boundary |
+| [`workflows/`](workflows/) | 3 process walkthroughs: demand → issue, issue → PR → evidence, review and close |
+| [`examples/`](examples/) | 2 end-to-end examples: AI resource index demo and living-loop walkthrough |
+| [`assets/`](assets/) | 4 SVGs (logo / banner / social preview / workflow loop) + 2 notes |
+| [`diagrams/`](diagrams/) | 1 Mermaid source diagram, renderable on demand |
+| [`templates/`](templates/) | 5 source templates, useful as a starting point for further customisation |
+| [`prompts/`](prompts/) | 1 backup prompt for scenarios that need more detailed instructions |
+| [`LICENSE`](LICENSE) | MIT license |
+| [`.gitignore`](.gitignore) | Common ignore rules |
+
+## Internal navigation
+
+| You want to | Jump to |
+|---|---|
+| See how the loop actually runs | [`docs/how-it-works.md`](docs/how-it-works.md) |
+| Adopt this kit into your own project | [`docs/adoption-guide.md`](docs/adoption-guide.md) |
+| Learn what Discussion / issue / PR / comment each do | [`docs/surface-map.md`](docs/surface-map.md) |
+| Decide which labels to use and when | [`docs/labels.md`](docs/labels.md) |
+| Confirm public-boundary requirements before publishing | [`docs/public-boundary.md`](docs/public-boundary.md) |
+| Verify the deployment is complete | [`docs/verification.md`](docs/verification.md) |
+| See what reviewers should look at | [`docs/review-checklist.md`](docs/review-checklist.md) |
+| Tick boxes before adopting | [`checklists/adoption-checklist.md`](checklists/adoption-checklist.md) |
+| Tick boxes for public boundary | [`checklists/public-boundary-checklist.md`](checklists/public-boundary-checklist.md) |
+| Demand Discussion template | [`.github/DISCUSSION_TEMPLATE/demand-confirmation.md`](.github/DISCUSSION_TEMPLATE/demand-confirmation.md) |
+| Task issue template | [`.github/ISSUE_TEMPLATE/task.md`](.github/ISSUE_TEMPLATE/task.md) |
+| Parent epic template | [`.github/ISSUE_TEMPLATE/parent-task.md`](.github/ISSUE_TEMPLATE/parent-task.md) |
+| Sub-task template | [`.github/ISSUE_TEMPLATE/sub-task.md`](.github/ISSUE_TEMPLATE/sub-task.md) |
+| Truth-source template (frozen) | [`.github/ISSUE_TEMPLATE/truth-source.md`](.github/ISSUE_TEMPLATE/truth-source.md) |
+| Kit feedback template | [`.github/ISSUE_TEMPLATE/kit-feedback.md`](.github/ISSUE_TEMPLATE/kit-feedback.md) |
+| Evidence comment template | [`.github/COMMENT_TEMPLATE/evidence-comment.md`](.github/COMMENT_TEMPLATE/evidence-comment.md) |
+| Completion comment template | [`.github/COMMENT_TEMPLATE/completion-comment.md`](.github/COMMENT_TEMPLATE/completion-comment.md) |
+| Exploration comment template | [`.github/COMMENT_TEMPLATE/exploration-comment.md`](.github/COMMENT_TEMPLATE/exploration-comment.md) |
+| Process: demand → issue | [`workflows/demand-discussion-to-issue.md`](workflows/demand-discussion-to-issue.md) |
+| Process: issue → PR → evidence | [`workflows/issue-to-pr-to-evidence.md`](workflows/issue-to-pr-to-evidence.md) |
+| Process: review and close | [`workflows/review-and-close-loop.md`](workflows/review-and-close-loop.md) |
+| End-to-end demo | [`examples/ai-resource-index-harness-demo.md`](examples/ai-resource-index-harness-demo.md) |
+| Living-loop walkthrough | [`examples/living-loop-walkthrough.md`](examples/living-loop-walkthrough.md) |
+| Backup prompt | [`prompts/project-harness-instructions.md`](prompts/project-harness-instructions.md) |
+| Source diagram (Mermaid) | [`diagrams/minimum-harness-engine.mmd`](diagrams/minimum-harness-engine.mmd) |
+| Workflow SVG | [`assets/workflow/github-harness-loop.svg`](assets/workflow/github-harness-loop.svg) |
+| Brand SVGs | [`assets/brand/`](assets/brand/) |
+| Assets overview | [`assets/README.md`](assets/README.md) |
+
+## Things to keep in mind
+
+- This project is a **deployed** bootstrap, not the source repository of the kit itself. The `templates/` and `prompts/` directories hold reference copies for further customisation.
+- After copying it into a new repository, immediately rewrite the project name, target user, and scope in `AGENTS.md` to fit your project.
+- The workflows in `.github/workflows/` depend on branch protection; make sure `main` requires PR review.
+- Discussion categories must be created in the UI; the API cannot create them.
+- Items labelled `truth-source` are skipped by the merge-closing logic and never auto-closed.
+
+## License and notes
+
+This project is released under the MIT license, see [`LICENSE`](LICENSE).
+
+It is a deployed-shape bootstrap that is more complete than the Quick Start minimum and is meant to be the starting point for any new project that wants the GitHub Harness loop out of the box.
