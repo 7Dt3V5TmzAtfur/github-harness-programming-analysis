@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="280" viewBox="0 0 1180 280" role="img" aria-labelledby="title desc">
+  <title id="title">GitHub Harness workflow loop</title>
+  <desc id="desc">Demand Discussion to task issue to PR or file change to evidence comment to human review.</desc>
+  <rect width="1180" height="280" rx="24" fill="#f8fafc"/>
+  <g font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">
+    <rect x="36" y="96" width="210" height="72" rx="14" fill="#2563eb"/>
+    <text x="141" y="138" text-anchor="middle" fill="#ffffff">Demand Discussion</text>
+    <path d="M262 132h62" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+    <path d="M324 132l-14-10v20z" fill="#64748b"/>
+    <rect x="340" y="96" width="170" height="72" rx="14" fill="#334155"/>
+    <text x="425" y="138" text-anchor="middle" fill="#ffffff">Task Issue</text>
+    <path d="M526 132h62" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+    <path d="M588 132l-14-10v20z" fill="#64748b"/>
+    <rect x="604" y="96" width="188" height="72" rx="14" fill="#334155"/>
+    <text x="698" y="138" text-anchor="middle" fill="#ffffff">PR / Change</text>
+    <path d="M808 132h62" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+    <path d="M870 132l-14-10v20z" fill="#64748b"/>
+    <rect x="886" y="96" width="230" height="72" rx="14" fill="#f59e0b"/>
+    <text x="1001" y="138" text-anchor="middle" fill="#111827">Evidence Comment</text>
+  </g>
+  <path d="M1000 180c-80 52-206 78-348 78-188 0-350-44-454-112" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 10"/>
+  <text x="590" y="238" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" fill="#334155">Human review: direction, boundary, evidence, next step</text>
+</svg>
