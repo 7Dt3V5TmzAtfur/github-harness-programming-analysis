@@ -13,6 +13,13 @@
 - 一份与 OpenSpec 的横向对比说明
 - 一份手把手的使用示例
 
+## 让 AI 读取项目说明
+把这段发给你的 AI agent：
+
+Read AGENTS.md and .agents/skills/github-harness-workflow/SKILL.md.
+Then help me run this repo through the GitHub Harness workflow.
+Do not start implementation until we have a demand Discussion or a task issue.
+
 ## 目录结构
 
 ```
